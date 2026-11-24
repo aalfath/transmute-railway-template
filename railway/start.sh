@@ -34,6 +34,10 @@ export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-$cpus}"
 export MKL_NUM_THREADS="${MKL_NUM_THREADS:-$cpus}"
 export NUMEXPR_MAX_THREADS="${NUMEXPR_MAX_THREADS:-$cpus}"
 export MALLOC_ARENA_MAX="${MALLOC_ARENA_MAX:-2}"
+# onnxruntime (pymupdf-layout) threads, applied by sitecustomize.py.
+export ORT_INTRA_OP_THREADS="${ORT_INTRA_OP_THREADS:-$cpus}"
+# Run converter jobs through /railway/oomwrap (see sitecustomize.py).
+export TRANSMUTE_OOM_WRAP="${TRANSMUTE_OOM_WRAP:-1}"
 if [ "$small" = 1 ]; then
   workers=1
   export TRANSMUTE_FFMPEG_THREADS="${TRANSMUTE_FFMPEG_THREADS:-1}"

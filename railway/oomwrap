@@ -1,0 +1,4 @@
+#!/bin/sh
+# Make this job the OOM killer's first choice, then run it (see sitecustomize.py).
+echo 1000 > /proc/self/oom_score_adj 2>/dev/null || true
+exec "$@"

@@ -6,7 +6,9 @@ FROM ghcr.io/transmute-app/transmute:2.1.1@sha256:87b669d835d9e68bdbc4082ab061cb
 COPY --chmod=755 railway/ /railway/
 RUN mv /usr/bin/ffmpeg /usr/bin/ffmpeg.real \
  && cp /railway/ffmpeg /usr/bin/ffmpeg \
- && chmod 755 /usr/bin/ffmpeg
+ && chmod 755 /usr/bin/ffmpeg \
+ && cp /railway/sitecustomize.py /usr/local/lib/python3.13/site-packages/sitecustomize.py \
+ && python -c "import sitecustomize"
 
 ENV PORT=3313
 EXPOSE 3313
