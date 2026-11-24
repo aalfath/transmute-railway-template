@@ -42,8 +42,9 @@ if [ "$small" = 1 ]; then
   workers=1
   export TRANSMUTE_FFMPEG_THREADS="${TRANSMUTE_FFMPEG_THREADS:-1}"
   # x264 lookahead and libvpx lag buffers hold whole frames: 1080p VP9 peaked at
-  # ~400 MB with defaults, ~290 MB with these (other encoders ignore them).
-  export TRANSMUTE_FFMPEG_EXTRA="${TRANSMUTE_FFMPEG_EXTRA:--rc-lookahead 10 -lag-in-frames 0}"
+  # ~400 MB with defaults, ~290 MB with these; 1080p H.264 ~240 MB -> ~165 MB.
+  # Other encoders ignore them.
+  export TRANSMUTE_FFMPEG_EXTRA="${TRANSMUTE_FFMPEG_EXTRA:--rc-lookahead 5 -bf 0 -refs 1 -lag-in-frames 0}"
 else
   workers=$cpus; [ "$workers" -gt 5 ] && workers=5
   export TRANSMUTE_FFMPEG_THREADS="${TRANSMUTE_FFMPEG_THREADS:-$cpus}"

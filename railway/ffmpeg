@@ -22,4 +22,9 @@ args+=(-threads "$n")
 # shellcheck disable=SC2206
 [ -n "${TRANSMUTE_FFMPEG_EXTRA:-}" ] && args+=($TRANSMUTE_FFMPEG_EXTRA)
 args+=("$out")
-exec "$real" "${args[@]}"
+"$real" "${args[@]}"
+rc=$?
+if [ "$rc" -eq 137 ]; then
+  echo "Transmute on Railway: this conversion ran out of memory and was stopped. Give the service more RAM (1 GB or more for 1080p video), or try a smaller file." >&2
+fi
+exit "$rc"
