@@ -47,6 +47,7 @@ def _patch_subprocess():
     # kills that one job (it fails with an error) instead of the web app.
     if os.environ.get("TRANSMUTE_OOM_WRAP") != "1":
         return
+    import shutil
     import subprocess
     wrap = "/railway/oomwrap"
     if not os.access(wrap, os.X_OK):
@@ -55,7 +56,11 @@ def _patch_subprocess():
 
     def __init__(self, args, *a, **kw):
         if isinstance(args, (list, tuple)) and args and str(args[0]) != wrap and not kw.get("shell"):
-            args = [wrap, *[str(x) if isinstance(x, os.PathLike) else x for x in args]]
+            exe = os.fspath(args[0]) if isinstance(args[0], (str, bytes, os.PathLike)) else None
+            # Only wrap programs that exist, so callers that probe for a binary
+            # (pypandoc) still get FileNotFoundError for missing ones.
+            if isinstance(exe, str) and (shutil.which(exe) if os.sep not in exe else os.access(exe, os.X_OK)):
+                args = [wrap, *[os.fspath(x) if isinstance(x, os.PathLike) else x for x in args]]
         base_init(self, args, *a, **kw)
 
     subprocess.Popen.__init__ = __init__
