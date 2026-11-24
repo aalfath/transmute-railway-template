@@ -27,7 +27,7 @@ This template runs Transmute 2.1.1 from the official image, pinned by version an
 
 After the deploy finishes, open the service's public URL and sign in as `admin` with the password from the service's **Variables** tab (`TRANSMUTE_ADMIN_PASSWORD`). Change it under My Account if you like; later edits to the variable don't change an existing account. Add more users from the admin settings. API docs are at `/api/docs`.
 
-Memory: the app uses about 300 MB on its own. On a 0.5 GB service, documents, images, audio and video up to 720p convert fine; a 1080p or larger video job may run out of memory and fail with a clear message while the app stays up. Give the service about 1 GB of RAM for 1080p video. Uploaded and converted files are deleted after 60 minutes by default; change or turn this off in Settings.
+Memory: the app uses about 300 MB on its own. On a 0.5 GB service, documents, images, audio and video up to 720p convert fine; a 1080p or larger video job may run out of memory and fail with a clear message while the app stays up. Give the service about 1 GB of RAM for 1080p video. Long API conversions should use the background jobs endpoints (`/api/jobs`), because Railway ends HTTP requests after 5 minutes; the web UI already does. Uploaded and converted files are deleted after 60 minutes by default; change or turn this off in Settings.
 
 Optional: single sign-on through any OIDC provider (`OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, see the Transmute OIDC docs). Updates: the template builds from a GitHub repo, so Railway shows an "update available" notice when the pinned Transmute version is bumped; read the repo's CHANGELOG before applying it.
 

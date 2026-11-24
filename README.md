@@ -30,6 +30,8 @@ The start script reads the service's CPU and memory limits from the cgroup (Rail
 
 - The app itself needs about 300 MB. On Railway's 0.5 GB Free/Trial limit, documents, images, audio, spreadsheets and video up to 720p convert fine.
 - A 1080p or larger video conversion needs about **1 GB of RAM**. On a smaller service such a job runs out of memory and fails with a clear message; converter jobs are the kernel's first choice when memory runs out, so the web app stays up.
+- Tested on Railway at 1 vCPU: at 0.5 GB a 15 s 1080p clip failed cleanly with the out-of-memory message; at 1 GB it converted to MKV in 29 s and to WebM (VP9, slow) in about 5 minutes.
+- Railway ends HTTP requests after 5 minutes. The web UI queues conversions as background jobs, so long jobs are fine there; API scripts should use the jobs endpoints (`POST /api/jobs`, then poll `GET /api/jobs/{id}`) rather than the synchronous `POST /api/conversions` for long video jobs.
 - If Transmute stops unexpectedly, the start script exits non-zero so Railway's restart policy brings it back.
 
 ## Updates
