@@ -1,0 +1,25 @@
+#!/bin/bash
+# ffmpeg wrapper (Railway template). Transmute runs /usr/bin/ffmpeg without
+# -threads, so x264/decoders size their pools from the host's CPUs (Railway
+# shows 32+), which can blow a 0.5 GB limit. Add -threads N before every input
+# and before the output, from TRANSMUTE_FFMPEG_THREADS set by start.sh.
+real=/usr/bin/ffmpeg.real
+n="${TRANSMUTE_FFMPEG_THREADS:-}"
+if [ -z "$n" ] || [ "$#" -lt 2 ]; then exec "$real" "$@"; fi
+for a in "$@"; do
+  case "$a" in
+    -version|-h|-help|--help|-buildconf|-formats|-codecs|-encoders|-decoders|-filters|-pix_fmts|-hwaccels) exec "$real" "$@" ;;
+  esac
+done
+out="${@: -1}"
+set -- "${@:1:$(($# - 1))}"
+args=(-filter_threads "$n")
+for a in "$@"; do
+  [ "$a" = "-i" ] && args+=(-threads "$n")
+  args+=("$a")
+done
+args+=(-threads "$n")
+# shellcheck disable=SC2206
+[ -n "${TRANSMUTE_FFMPEG_EXTRA:-}" ] && args+=($TRANSMUTE_FFMPEG_EXTRA)
+args+=("$out")
+exec "$real" "${args[@]}"
